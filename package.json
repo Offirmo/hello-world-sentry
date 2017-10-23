@@ -1,0 +1,13 @@
+{
+  "name": "hello-world-sentry",
+  "version": "0.0.1",
+  "description": " Testing the Sentry client error catching service https://sentry.io/welcome/ ",
+  "main": "index.js",
+  "repository": "https://github.com/Offirmo/hello-world-sentry.git",
+  "author": "Offirmo <offirmo.net@gmail.com>",
+  "license": "UNLICENSE",
+  "dependencies": {
+    "git-rev-sync": "^1.9.1",
+    "raven": "^2.2.1"
+  }
+}
