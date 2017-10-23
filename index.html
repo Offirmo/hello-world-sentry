@@ -12,23 +12,47 @@
 			font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 			color: #333;
 		}
-
-		.place {
-			color: #00B32D;
-		}
-		.place:after {
-			content: ' 🏜';
-		}
-		.person {
-			color: #0b97c4;
-		}
-		.item-weapon {
-			color: #d9534f;
-		}
-		.item-weapon:before {
-			content: '⚔ ';
-		}
 	</style>
+
+	<script src="https://cdn.ravenjs.com/3.19.1/raven.min.js" crossorigin="anonymous"></script>
+
 </head>
 
-<p>TODO</p>
+<p>
+	<button id="a">💣</button>
+</p>
+
+<script>
+	console.log("hello world")
+
+	Raven
+		.config('https://52f8a7ef91a24f50bd54447e0a120476@sentry.io/233871')
+		.install()
+
+	Raven.context(function () {
+		document.addEventListener('click', /*Raven.context(*/event => {
+			const { target: clickedElement } = event
+			if (!clickedElement)
+				throw new Error('click event has no target!')
+
+			if (clickedElement.matches(`#a`)) {
+				console.log('💣 clicked')
+				setTimeout(() => {
+					throw '[thrown string]' // 🤕 not throwing a proper error!
+				})
+
+				setTimeout(() => {
+					throw new Error('[thrown error]')
+				})
+
+				new Promise((resolve, reject) => {
+					setTimeout(() => reject('[rejected string]')) // 🤕 not rejecting with a proper error!
+				})
+
+				new Promise((resolve, reject) => {
+					setTimeout(() => reject(new Error('[rejected error]')))
+				})
+			}
+		})
+	})
+</script>
