@@ -53,12 +53,17 @@
 		Raven.captureException(reason)
 	})
 
+	// tags for logically grouping errors
+	// NOT shown in main error report page
 	Raven.setTagsContext({
+		experiment: 'GROW-1234',
 		cohort: 'variation',
 	})
 
+	// details about the next errors
+	// shown in main error report page
 	Raven.setExtraContext({
-		experiment: 'GROW-1234',
+		foo: 'bar',
 	})
 
 	/*
