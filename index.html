@@ -27,7 +27,7 @@
 <ul>
 	<li>Hello world for <a href="https://sentry.io/welcome/">sentry.io</a></li>
 	<li><a href="https://github.com/Offirmo/hello-world-sentry">fork me on GitHub</a></li>
-	<li>v1.6</li>
+	<li>v1.7</li>
 </ul>
 
 <p>
@@ -44,7 +44,7 @@
 	Raven
 		// https://docs.sentry.io/clients/javascript/config/
 		.config('https://52f8a7ef91a24f50bd54447e0a120476@sentry.io/233871', {
-			release: 'v1.6',
+			release: 'v1.7',
 		})
 		.install()
 
@@ -56,6 +56,7 @@
 	// tags for logically grouping errors
 	// NOT shown in main error report page
 	Raven.setTagsContext({
+		tags_context: 123,
 		experiment: 'GROW-1234',
 		cohort: 'variation',
 	})
@@ -63,42 +64,8 @@
 	// details about the next errors
 	// shown in main error report page
 	Raven.setExtraContext({
-		foo: 'bar',
+		extra_context: 'bar',
 	})
-
-	/*
-fingerprint
-In supported SDKs, this attribute can be passed with the event information, and should be an array of strings:
-
-Raven.captureException(ex, {fingerprint: ['my', 'custom', 'fingerprint']})
-
-Additionally if you simply wish to append information, thus making the grouping slightly less aggressive, you can do that as well:
-
-Raven.captureException(ex, {fingerprint: ['{{ default }}', 'other', 'data']})
-
-
-Raven.setUserContext({
-email: 'matt@example.com',
-id: '123'
-})
-
-// NOTE: Raven.wrap and Raven.context accept options as first argument
-Raven.wrap({
-	tags: {git_commit: 'c0deb10c4'}
-}, function () {... })
-Raven.context({
-	extra: {planet: {name: 'Earth'}}
-}, function () { .../ })
-
-Raven.captureBreadcrumb({
-  message: 'Item added to shopping cart',
-  category: 'action',
-  data: {
-     isbn: '978-1617290541',
-     cartSize: '3'
-  }
-})
-	 */
 
 	function be_naughty() {
 		setTimeout(() => {
@@ -133,7 +100,7 @@ Raven.captureBreadcrumb({
 			Raven.captureMessage('Bonjour, monde !', {
 				level: 'info', // one of 'info', 'warning', or 'error'
 				tags: {
-					locale: 'fr',
+					bar: 'baz',
 				},
 				xtest: 123,
 			})
@@ -148,7 +115,7 @@ Raven.captureBreadcrumb({
 	})
 
 	Raven.context({
-		xcontext: 'xyz',
+		raven_context: 'xyz',
 	}, function () {
 		document.addEventListener('click', event => {
 			const { target: clickedElement } = event
@@ -161,4 +128,40 @@ Raven.captureBreadcrumb({
 			}
 		})
 	})
+
+
+
+	/*
+fingerprint
+In supported SDKs, this attribute can be passed with the event information, and should be an array of strings:
+
+Raven.captureException(ex, {fingerprint: ['my', 'custom', 'fingerprint']})
+
+Additionally if you simply wish to append information, thus making the grouping slightly less aggressive, you can do that as well:
+
+Raven.captureException(ex, {fingerprint: ['{{ default }}', 'other', 'data']})
+
+
+Raven.setUserContext({
+email: 'matt@example.com',
+id: '123'
+})
+
+// NOTE: Raven.wrap and Raven.context accept options as first argument
+Raven.wrap({
+	tags: {git_commit: 'c0deb10c4'}
+}, function () {... })
+Raven.context({
+	extra: {planet: {name: 'Earth'}}
+}, function () { .../ })
+
+Raven.captureBreadcrumb({
+  message: 'Item added to shopping cart',
+  category: 'action',
+  data: {
+     isbn: '978-1617290541',
+     cartSize: '3'
+  }
+})
+	 */
 </script>
