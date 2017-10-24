@@ -27,7 +27,7 @@
 <ul>
 	<li>Hello world for <a href="https://sentry.io/welcome/">sentry.io</a></li>
 	<li><a href="https://github.com/Offirmo/hello-world-sentry">fork me on GitHub</a></li>
-	<li>v1.7</li>
+	<li>v1.8</li>
 </ul>
 
 <p>
@@ -44,7 +44,7 @@
 	Raven
 		// https://docs.sentry.io/clients/javascript/config/
 		.config('https://52f8a7ef91a24f50bd54447e0a120476@sentry.io/233871', {
-			release: 'v1.7',
+			release: 'v1.8',
 		})
 		.install()
 
@@ -69,20 +69,22 @@
 
 	function be_naughty() {
 		setTimeout(() => {
-			throw '[thrown string]' // 🤕 not throwing a proper error!
+			throw '[asyncly thrown string]' // 🤕 not throwing a proper error!
 		})
 
 		setTimeout(() => {
-			throw new Error('[thrown error]')
+			throw new Error('[asyncly thrown error]')
 		})
 
 		new Promise((resolve, reject) => {
-			setTimeout(() => reject('[rejected string]')) // 🤕 not rejecting with a proper error!
+			setTimeout(() => reject('[asyncly rejected string]')) // 🤕 not rejecting with a proper error!
 		})
 
 		new Promise((resolve, reject) => {
-			setTimeout(() => reject(new Error('[rejected error]')))
+			setTimeout(() => reject(new Error('[asyncly rejected error]')))
 		})
+
+		throw new Error('[sync thrown error]')
 	}
 
 	document.addEventListener('click', event => {
