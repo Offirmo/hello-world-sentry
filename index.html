@@ -11,6 +11,12 @@
 			margin: 40px;
 			font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 			color: #333;
+			font-size: 24px;
+		}
+
+		button {
+			padding: 12px;
+			font-size: 24px;
 		}
 	</style>
 
@@ -18,40 +24,123 @@
 
 </head>
 
+<ul>
+	<li>Hello world for <a href="https://sentry.io/welcome/">sentry.io</a></li>
+	<li><a href="https://github.com/Offirmo/hello-world-sentry">fork me on GitHub</a></li>
+</ul>
+
 <p>
-	<button id="a">💣</button>
+	<button id="a">💣 &nbsp;break everything!</button>
+	<button id="b">🍷 &nbsp;do nothing</button>
+	<button id="c">💣 &nbsp;break in context?</button>
+	<button id="d">📩 &nbsp;message</button>
+	<button id="e">📩 &nbsp;report…</button>
 </p>
 
 <script>
-	console.log("hello world")
+	console.log("hello world!")
 
 	Raven
-		.config('https://52f8a7ef91a24f50bd54447e0a120476@sentry.io/233871')
+		// https://docs.sentry.io/clients/javascript/config/
+		.config('https://52f8a7ef91a24f50bd54447e0a120476@sentry.io/233871', {
+			release: 'TODO',
+			//logger: 'my-logger',
+		})
 		.install()
 
+	Raven.setTagsContext({
+		lang: "en-au"
+	})
+
+	Raven.setExtraContext({
+		foo: 'bar',
+		baz: 42,
+	})
+
+	/*
+fingerprint
+In supported SDKs, this attribute can be passed with the event information, and should be an array of strings:
+
+Raven.captureException(ex, {fingerprint: ['my', 'custom', 'fingerprint']})
+
+Additionally if you simply wish to append information, thus making the grouping slightly less aggressive, you can do that as well:
+
+Raven.captureException(ex, {fingerprint: ['{{ default }}', 'other', 'data']})
+
+
+Raven.setUserContext({
+email: 'matt@example.com',
+id: '123'
+})
+
+// NOTE: Raven.wrap and Raven.context accept options as first argument
+Raven.wrap({
+	tags: {git_commit: 'c0deb10c4'}
+}, function () {... })
+Raven.context({
+	extra: {planet: {name: 'Earth'}}
+}, function () { .../ })
+
+Raven.captureBreadcrumb({
+  message: 'Item added to shopping cart',
+  category: 'action',
+  data: {
+     isbn: '978-1617290541',
+     cartSize: '3'
+  }
+})
+	 */
+
+	function naughty() {
+		setTimeout(() => {
+			throw '[thrown string]' // 🤕 not throwing a proper error!
+		})
+
+		setTimeout(() => {
+			throw new Error('[thrown error]')
+		})
+
+		new Promise((resolve, reject) => {
+			setTimeout(() => reject('[rejected string]')) // 🤕 not rejecting with a proper error!
+		})
+
+		new Promise((resolve, reject) => {
+			setTimeout(() => reject(new Error('[rejected error]')))
+		})
+	}
+
+	document.addEventListener('click', event => {
+		const { target: clickedElement } = event
+		if (!clickedElement)
+			throw new Error('click event has no target!')
+
+		if (clickedElement.matches(`#a`)) {
+			console.log('💣 breaking everything...')
+			naughty()
+		}
+
+		if (clickedElement.matches(`#d`)) {
+			console.log('📩 message...')
+			Raven.captureMessage('Bonjour, monde !', {tags: {
+				locale: 'fr'
+			}})
+		}
+
+		if (clickedElement.matches(`#e`)) {
+			console.log('📩 report...')
+			Raven.showReportDialog()
+		}
+	})
+
 	Raven.context(function () {
-		document.addEventListener('click', /*Raven.context(*/event => {
+		document.addEventListener('click', event => {
 			const { target: clickedElement } = event
 			if (!clickedElement)
 				throw new Error('click event has no target!')
 
-			if (clickedElement.matches(`#a`)) {
-				console.log('💣 clicked')
-				setTimeout(() => {
-					throw '[thrown string]' // 🤕 not throwing a proper error!
-				})
-
-				setTimeout(() => {
-					throw new Error('[thrown error]')
-				})
-
-				new Promise((resolve, reject) => {
-					setTimeout(() => reject('[rejected string]')) // 🤕 not rejecting with a proper error!
-				})
-
-				new Promise((resolve, reject) => {
-					setTimeout(() => reject(new Error('[rejected error]')))
-				})
+			if (clickedElement.matches(`#c`)) {
+				console.log('💣 breaking everything in context...')
+				naughty()
 			}
 		})
 	})
