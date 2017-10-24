@@ -27,7 +27,7 @@
 <ul>
 	<li>Hello world for <a href="https://sentry.io/welcome/">sentry.io</a></li>
 	<li><a href="https://github.com/Offirmo/hello-world-sentry">fork me on GitHub</a></li>
-	<li>v1.5</li>
+	<li>v1.6</li>
 </ul>
 
 <p>
@@ -44,7 +44,7 @@
 	Raven
 		// https://docs.sentry.io/clients/javascript/config/
 		.config('https://52f8a7ef91a24f50bd54447e0a120476@sentry.io/233871', {
-			release: 'v1.5',
+			release: 'v1.6',
 		})
 		.install()
 
@@ -130,10 +130,13 @@ Raven.captureBreadcrumb({
 
 		if (clickedElement.matches(`#d`)) {
 			console.log('📩 message...')
-			Raven.captureMessage('Bonjour, monde !', {tags: {
+			Raven.captureMessage('Bonjour, monde !', {
 				level: 'info', // one of 'info', 'warning', or 'error'
-				locale: 'fr',
-			}})
+				tags: {
+					locale: 'fr',
+				},
+				xtest: 123,
+			})
 		}
 
 		if (clickedElement.matches(`#e`)) {
