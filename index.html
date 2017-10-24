@@ -44,9 +44,13 @@
 		// https://docs.sentry.io/clients/javascript/config/
 		.config('https://52f8a7ef91a24f50bd54447e0a120476@sentry.io/233871', {
 			release: 'TODO',
-			//logger: 'my-logger',
 		})
 		.install()
+
+	window.addEventListener('unhandledrejection', event => {
+		const {reason} = event
+		Raven.captureException(reason)
+	})
 
 	Raven.setTagsContext({
 		lang: "en-au"
@@ -91,7 +95,7 @@ Raven.captureBreadcrumb({
 })
 	 */
 
-	function naughty() {
+	function be_naughty() {
 		setTimeout(() => {
 			throw '[thrown string]' // 🤕 not throwing a proper error!
 		})
@@ -116,7 +120,7 @@ Raven.captureBreadcrumb({
 
 		if (clickedElement.matches(`#a`)) {
 			console.log('💣 breaking everything...')
-			naughty()
+			be_naughty()
 		}
 
 		if (clickedElement.matches(`#d`)) {
@@ -128,6 +132,8 @@ Raven.captureBreadcrumb({
 
 		if (clickedElement.matches(`#e`)) {
 			console.log('📩 report...')
+			// we need to have caught at least one error before reporting
+			Raven.captureException(new Error('Error just for being sure there was at least one!'));
 			Raven.showReportDialog()
 		}
 	})
@@ -140,7 +146,7 @@ Raven.captureBreadcrumb({
 
 			if (clickedElement.matches(`#c`)) {
 				console.log('💣 breaking everything in context...')
-				naughty()
+				be_naughty()
 			}
 		})
 	})
